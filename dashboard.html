@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Security Camera System - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #F9FAFB;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2563EB;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #2563EB;
+        }
+
+        .btn-primary:hover {
+            background-color: #EFF6FF;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .status-bar {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-item {
+            text-align: center;
+        }
+
+        .status-item h3 {
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.active {
+            background-color: #10B981;
+        }
+
+        .status-indicator.inactive {
+            background-color: #9CA3AF;
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-control {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-start {
+            background-color: #10B981;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background-color: #059669;
+        }
+
+        .btn-pause {
+            background-color: #F59E0B;
+            color: white;
+        }
+
+        .btn-pause:hover {
+            background-color: #D97706;
+        }
+
+        .btn-stop {
+            background-color: #EF4444;
+            color: white;
+        }
+
+        .btn-stop:hover {
+            background-color: #DC2626;
+        }
+
+        .btn-settings {
+            background-color: #6B7280;
+            color: white;
+        }
+
+        .btn-settings:hover {
+            background-color: #4B5563;
+        }
+
+        .video-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .video-stream {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 8px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-stream img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .performance-metrics {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .performance-metrics h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            background-color: #F9FAFB;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .metric-card h3 {
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .metric-card .metric-label {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .alerts-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .alerts-panel h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .alert-item {
+            background-color: #FEF2F2;
+            border-left: 4px solid #EF4444;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .alert-item h4 {
+            color: #EF4444;
+            margin-bottom: 8px;
+        }
+
+        .alert-item p {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .alert-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-view {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        .btn-dismiss {
+            background-color: #6B7280;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6B7280;
+        }
+
+        @media (max-width: 768px) {
+            .status-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Security Camera System</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="window.location.href='#settings'">⚙ Settings</button>
+                <button class="btn btn-secondary" onclick="window.location.href='#recordings'">📁 Recordings</button>
+            </div>
+        </header>
+
+        <div class="status-bar" id="statusBar">
+            <div class="status-item">
+                <h3>Status</h3>
+                <div class="value">
+                    <span class="status-indicator inactive" id="statusIndicator"></span>
+                    <span id="statusText">Stopped</span>
+                </div>
+            </div>
+            <div class="status-item">
+                <h3>Active Cameras</h3>
+                <div class="value" id="activeCameras">0</div>
+            </div>
+            <div class="status-item">
+                <h3>Recording</h3>
+                <div class="value">
+                    <span class="status-indicator inactive" id="recordingIndicator"></span>
+                    <span id="recordingText">No</span>
+                </div>
+            </div>
+            <div class="status-item">
+                <h3>Detections</h3>
+                <div class="value" id="detectionsCount">0</div>
+            </div>
+            <div class="status-item">
+                <h3>Resolution</h3>
+                <div class="value" id="resolutionDisplay">-</div>
+            </div>
+            <div class="status-item">
+                <h3>FPS Range</h3>
+                <div class="value" id="fpsRangeDisplay">-</div>
+            </div>
+            <div class="status-item">
+                <h3>CPU Load</h3>
+                <div class="value" id="cpuLoadDisplay">-</div>
+            </div>
+            <div class="status-item">
+                <h3>Detection Latency</h3>
+                <div class="value" id="latencyDisplay">-</div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn-control btn-start" id="startBtn" onclick="startMonitoring()">▶ Start</button>
+            <button class="btn-control btn-pause" id="pauseBtn" onclick="pauseMonitoring()" disabled>⏸ Pause</button>
+            <button class="btn-control btn-stop" id="stopBtn" onclick="stopMonitoring()" disabled>⏹ Stop</button>
+            <button class="btn-control btn-settings" onclick="window.location.href='#settings'">⚙ Settings</button>
+            <button class="btn-control btn-settings" onclick="window.location.href='#analytics'">📊 Analytics</button>
+            <button class="btn-control btn-settings" onclick="window.location.href='#recordings'">📁 Recordings</button>
+        </div>
+
+        <div class="video-container">
+            <h2>Live Stream View</h2>
+            <div class="video-stream">
+                <img id="videoStream" src="" alt="Live Stream" style="display: none;">
+                <div class="loading" id="streamLoading">Stream not started. Click Start to begin monitoring.</div>
+            </div>
+            <div class="video-controls">
+                <button class="btn-control btn-settings" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                <button class="btn-control btn-settings" onclick="takeSnapshot()">📷 Snapshot</button>
+                <button class="btn-control btn-settings" onclick="toggleRecord()">🔴 Record</button>
+            </div>
+        </div>
+
+        <div class="performance-metrics">
+            <h2>Performance Metrics</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Resolution</h3>
+                    <div class="metric-value" id="metricResolution">-</div>
+                    <div class="metric-label">Video Resolution</div>
+                </div>
+                <div class="metric-card">
+                    <h3>FPS Range</h3>
+                    <div class="metric-value" id="metricFPSRange">-</div>
+                    <div class="metric-label" id="metricFPSCurrent">Current: -</div>
+                </div>
+                <div class="metric-card">
+                    <h3>CPU Load</h3>
+                    <div class="metric-value" id="metricCPULoad">-</div>
+                    <div class="metric-label">CPU Usage Percentage</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Detection Latency</h3>
+                    <div class="metric-value" id="metricLatency">-</div>
+                    <div class="metric-label">Average Detection Time</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alerts-panel">
+            <h2>Recent Alerts</h2>
+            <div id="alertsList">
+                <div class="loading">No alerts</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let ws = null;
+        let isMonitoring = false;
+        let statusInterval = null;
+
+        // Initialize WebSocket connection
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${API_URL.replace('http://', '')}/ws`);
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateStatus(data);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket disconnected, reconnecting...');
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+
+        // Fetch status from API
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${API_URL}/api/status`);
+                const data = await response.json();
+                updateStatus(data);
+            } catch (error) {
+                console.error('Error fetching status:', error);
+            }
+        }
+
+        // Update UI with status data
+        function updateStatus(data) {
+            // Update status indicators
+            isMonitoring = data.status === 'running';
+            document.getElementById('statusText').textContent = data.status === 'running' ? 'Active' : 'Stopped';
+            document.getElementById('statusIndicator').className = `status-indicator ${data.status === 'running' ? 'active' : 'inactive'}`;
+            
+            // Update recording status
+            document.getElementById('recordingText').textContent = data.recording ? 'Yes' : 'No';
+            document.getElementById('recordingIndicator').className = `status-indicator ${data.recording ? 'active' : 'inactive'}`;
+            
+            // Update detections
+            if (data.monitoring && data.monitoring.current_detections !== undefined) {
+                document.getElementById('detectionsCount').textContent = data.monitoring.current_detections || 0;
+            }
+            
+            // Update active cameras
+            document.getElementById('activeCameras').textContent = data.active_connections || 0;
+            
+            // Update performance metrics
+            if (data.performance) {
+                const perf = data.performance;
+                
+                // Resolution
+                if (perf.resolution) {
+                    document.getElementById('resolutionDisplay').textContent = perf.resolution.display || '-';
+                    document.getElementById('metricResolution').textContent = perf.resolution.display || '-';
+                }
+                
+                // FPS Range
+                if (perf.fps_range) {
+                    const fpsDisplay = perf.fps_range.display || '-';
+                    document.getElementById('fpsRangeDisplay').textContent = fpsDisplay;
+                    document.getElementById('metricFPSRange').textContent = fpsDisplay;
+                    document.getElementById('metricFPSCurrent').textContent = `Current: ${perf.fps_range.current || 0} FPS`;
+                }
+                
+                // CPU Load
+                if (perf.cpu_load !== undefined) {
+                    document.getElementById('cpuLoadDisplay').textContent = `${perf.cpu_load}%`;
+                    document.getElementById('metricCPULoad').textContent = `${perf.cpu_load}%`;
+                }
+                
+                // Detection Latency
+                if (perf.detection_latency !== undefined) {
+                    document.getElementById('latencyDisplay').textContent = `${perf.detection_latency}ms`;
+                    document.getElementById('metricLatency').textContent = `${perf.detection_latency}ms`;
+                }
+            }
+            
+            // Update video stream
+            if (isMonitoring) {
+                document.getElementById('videoStream').src = `${API_URL}/api/stream?t=${Date.now()}`;
+                document.getElementById('videoStream').style.display = 'block';
+                document.getElementById('streamLoading').style.display = 'none';
+            } else {
+                document.getElementById('videoStream').style.display = 'none';
+                document.getElementById('streamLoading').style.display = 'block';
+            }
+            
+            // Update control buttons
+            document.getElementById('startBtn').disabled = isMonitoring;
+            document.getElementById('pauseBtn').disabled = !isMonitoring;
+            document.getElementById('stopBtn').disabled = !isMonitoring;
+        }
+
+        // Start monitoring
+        async function startMonitoring() {
+            try {
+                const response = await fetch(`${API_URL}/api/start`, { method: 'POST' });
+                const data = await response.json();
+                if (data.status === 'running') {
+                    isMonitoring = true;
+                    fetchStatus();
+                }
+            } catch (error) {
+                console.error('Error starting monitoring:', error);
+                alert('Failed to start monitoring: ' + error.message);
+            }
+        }
+
+        // Stop monitoring
+        async function stopMonitoring() {
+            try {
+                const response = await fetch(`${API_URL}/api/stop`, { method: 'POST' });
+                const data = await response.json();
+                if (data.status === 'stopped') {
+                    isMonitoring = false;
+                    document.getElementById('videoStream').src = '';
+                    fetchStatus();
+                }
+            } catch (error) {
+                console.error('Error stopping monitoring:', error);
+                alert('Failed to stop monitoring: ' + error.message);
+            }
+        }
+
+        // Pause monitoring (placeholder)
+        function pauseMonitoring() {
+            alert('Pause functionality not yet implemented');
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const videoStream = document.getElementById('videoStream');
+            if (!document.fullscreenElement) {
+                videoStream.requestFullscreen().catch(err => {
+                    alert('Error attempting to enable fullscreen: ' + err.message);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Take snapshot
+        function takeSnapshot() {
+            const videoStream = document.getElementById('videoStream');
+            const canvas = document.createElement('canvas');
+            canvas.width = videoStream.videoWidth || videoStream.naturalWidth;
+            canvas.height = videoStream.videoHeight || videoStream.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoStream, 0, 0);
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `snapshot_${Date.now()}.png`;
+            a.click();
+        }
+
+        // Toggle record
+        function toggleRecord() {
+            alert('Record functionality not yet implemented');
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            connectWebSocket();
+            fetchStatus();
+            // Refresh status every 2 seconds
+            statusInterval = setInterval(fetchStatus, 2000);
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (ws) {
+                ws.close();
+            }
+            if (statusInterval) {
+                clearInterval(statusInterval);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
